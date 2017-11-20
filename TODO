@@ -1,0 +1,5 @@
+- image quilting random (selection de patchs aléatoires et quilting en calculant les min cut dans les deux directions)
+- image quilting pour la texture synthesis -> ajouter la contrainte de choix des patchs (erreur sur l'overlap)
+- implémenter les correspondance map 
+- image quilting texture transfer
+- implémentation itérative

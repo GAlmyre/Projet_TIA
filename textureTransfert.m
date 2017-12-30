@@ -1,4 +1,4 @@
-function result = textureTransfert(src, src_map, dst_map, nb_it, PATCH_SIZE)
+function result = textureTransfert(src, src_map, dst_map, PATCH_SIZE)
     global DISPLAY;
     
     HALF_OVERLAP = max(1,floor(PATCH_SIZE/6));
@@ -10,7 +10,6 @@ function result = textureTransfert(src, src_map, dst_map, nb_it, PATCH_SIZE)
     target_size = [dstm_h, dstm_w];
     
     nbb = ceil([dstm_h dstm_w]/PATCH_SIZE);
-    %nbb = floor([dstm_h dstm_w]/PATCH_SIZE);
     
     dst_size = [nbb * PATCH_SIZE + OVERLAP, src_c];
     
@@ -51,24 +50,19 @@ function result = textureTransfert(src, src_map, dst_map, nb_it, PATCH_SIZE)
                 %rj = randi([1, src_w-(PATCH_SIZE+OVERLAP)+1]);
 
                 %patch = getImagePatch(src, [ri, rj], PATCH_SIZE+OVERLAP);
-                patch = getBestPatchConv2(src, overlap, src_map, overlap_map, 0.6, overlapMask, PATCH_SIZE+OVERLAP);
+                patch = getBestPatch2(src, overlap, src_map, overlap_map, 0.6, overlapMask, PATCH_SIZE+OVERLAP);
             end
 
-
+            overlap = dst(start_i:end_i, start_j:end_j,:);
             %we compute overlaping with already existing patches
              if i ~= 0 && j ~= 0%overlap en haut et à gauche
-                overlapTop = dst(start_i:start_i+OVERLAP-1, start_j:end_j,:);
-                overlapLeft = dst(start_i:end_i, start_j:start_j+OVERLAP-1,:);
-                %patch = patchOverlapHorizontal(overlapLeft, patch, PATCH_SIZE+OVERLAP, OVERLAP);
-                %patch = patchOverlapVertical(overlapTop, patch, PATCH_SIZE+OVERLAP, OVERLAP);
-                overlap = dst(start_i:end_i, start_j:end_j,:);
                 patch = patchOverlapDiagonal(overlap, patch, PATCH_SIZE+OVERLAP, OVERLAP);
             elseif j ~= 0%overlap à gauche
                 overlapLeft = dst(start_i:end_i, start_j:start_j+OVERLAP-1,:);
-                patch = patchOverlapHorizontal(overlapLeft, patch, PATCH_SIZE+OVERLAP, OVERLAP);
+                patch = patchOverlapHorizontal(overlap, patch, PATCH_SIZE+OVERLAP, OVERLAP);
             elseif i ~= 0%overlap en haut
                 overlapTop = dst(start_i:start_i+OVERLAP-1, start_j:end_j,:);
-                patch = patchOverlapVertical(overlapTop, patch, PATCH_SIZE+OVERLAP, OVERLAP);
+                patch = patchOverlapVertical(overlap, patch, PATCH_SIZE+OVERLAP, OVERLAP);
 
             end
 

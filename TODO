@@ -20,7 +20,8 @@ pour le rapport :
 		sum(2*p1*p2) : 2 * conv(im1, p2)
 		sum(p2²)     : 	sum(p2²)
 - améliorations / limites : 
-	- on a cherché à optimiser le calcul des ssd mais pas eu le temps de s'intéresser au min cut  on peut certainement améliorer cette partie du code en terme de rapidité
+	- on a cherché à optimiser le calcul des ssd mais pas eu le temps de s'intéresser au min cut  on peut certainement améliorer cette partie du code en terme de rapidité/réduction de duplication de code
+	     - min cut vertical et horizontal -> duplication de code
 	- amélioration des correspondance map ? pour l'instant on ne gère que des correspondance map qui encode une seule information par pixel, l'utilisateur doit construire lui même ses correspondance maps
 		- ajout du support des correspondances maps multiples permettant de donner plus de descripteurs à la fois
 	 

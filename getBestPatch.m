@@ -1,28 +1,32 @@
-function [result, ssd_tab] = getBestPatch(src, overlap, overlapMask, patchSize)
+function result = getBestPatch(src, overlap, overlapMask, patchSize)
     [src_h, src_w, src_c] = size(src);
     nb_candidates = (src_h-patchSize+1) * (src_w-patchSize+1);
-    candidates = ones(nb_candidates, 3);
-    candidate_id = 1;
-    overlap = overlap .* overlapMask;
-    ssd_tab = zeros(src_h-patchSize+1, src_w-patchSize+1);
-    for i=1:src_h-patchSize+1
-        for j=1:src_w-patchSize+1
-        patch = getImagePatch(src, [i, j], patchSize);
-        ssd_tab(i,j) = ssd(patch.*overlapMask, overlap);  
-        candidates(candidate_id, :) = [ssd_tab(i,j),...%ssd(patch.*overlapMask, overlap),...
-                                       i, j];
-        candidate_id = candidate_id+1;
-        end
+    
+    overlap = sum(overlap, 3)/3 .* overlapMask;
+    src_gray = sum(src, 3)/3;
+    srcsq = src_gray .* src_gray;
+
+    
+    ssd_tab = sum(sum((overlap.*overlap).*overlapMask)) ...
+            - 2*filter2(overlap.*overlapMask, src_gray, 'valid') ...
+            + filter2(overlapMask, src_gray.*src_gray, 'valid');
+
+    val = min(ssd_tab(:));
+    [i, j] = find(ssd_tab==val);
+    %if the min is 0 we want the second min to compute our error tolerance
+    if val < 0.01
+        ssd_tab(i, j) = 100000;
+        val = min(ssd_tab(:));
+        ssd_tab(i, j) = 0;
+        [i, j] = find(ssd_tab==val);
     end
-    candidates;
-    [minVal, minInd] = min(candidates(:, 1));
-    if minVal == 0
-        candidates(minInd,1) = 1000;
-        [minVal, minInd] = min(candidates(:, 1)) 
+    searchVal = 1.1 * val;
+    cand_idx = ssd_tab <= searchVal;
+    nb_c = nnz(cand_idx);
+    
+    %we select some candidates and pick one randomly
+    candidates = ssd_tab(cand_idx);
+    picked = candidates(randi([1 nb_c]));
+    [i, j] = find(ssd_tab==picked);
+    result = getImagePatch(src, [i j], patchSize);
     end
-    searchVal = 1.1 * minVal;
-    cand_idx = candidates(:,1) <= searchVal;
-    nb_c = nnz(cand_idx)
-    new_candidates = candidates(cand_idx, :)
-    result = getImagePatch(src, new_candidates(randi([1, nb_c]), 2:3), patchSize);
-end

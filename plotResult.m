@@ -1,11 +1,9 @@
-function plotResult(src, patch, result)
+function plotResult(src, result)
     clf();
-    subplot(3,1,1);
+    subplot(1,2,1);
     imagesc(src);
-    title('Src Image');
-    subplot(3,1,2);
-    imagesc(patch);
-    title('Patch');
-    subplot(3,1,3);
+    %subplot(3,1,2);
+    %imagesc(patch);
+    %title('Patch');
+    subplot(1,2,2);
     imagesc(result);
-    title('Result');

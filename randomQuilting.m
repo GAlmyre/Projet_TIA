@@ -1,4 +1,4 @@
-PATCH_SIZE = 20;
+PATCH_SIZE = 25;
 PATCH_OVERLAP = 10;
 OFFSET = PATCH_SIZE - PATCH_OVERLAP
 
@@ -61,7 +61,7 @@ for i=0:nbb_i-1
             start_j:end_j,...
             :) = patch;
         plotResult(src, patch, dst);
-        pause(0.5)
+        pause(1)
     end
 end
 

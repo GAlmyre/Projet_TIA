@@ -5,7 +5,7 @@ PATCH_SIZE = 10;
 HALF_OVERLAP = 3;
 OVERLAP = 2*HALF_OVERLAP;
 
-src = im2double(imread('./data/textures/texture1.jpg'));
+src = im2double(imread('./data/textures/mur1.jpg'));
 
 %src = src(1:10, 1:10, :);
 
@@ -19,8 +19,8 @@ overlapMask = ones(PATCH_SIZE+OVERLAP, PATCH_SIZE+OVERLAP);
 overlapMask(HALF_OVERLAP+1:PATCH_SIZE+OVERLAP, HALF_OVERLAP+1:PATCH_SIZE+OVERLAP) = zeros(PATCH_SIZE+HALF_OVERLAP, PATCH_SIZE+HALF_OVERLAP);
 overlap = overlap .* overlapMask;
 
-[patch, ssd1] = getBestPatch(src, overlap, overlapMask, PATCH_SIZE+OVERLAP);
-[patch2, ssd2] = getBestPatchConv(src, overlap, overlapMask, PATCH_SIZE+OVERLAP);
+[patch, ssd1] = getBestPatchNaive(src, overlap, overlapMask, PATCH_SIZE+OVERLAP);
+patch2 = getBestPatch(src, overlap, overlapMask, PATCH_SIZE+OVERLAP);
 
 clf();
 subplot(2,2,1);
@@ -35,5 +35,5 @@ colorbar;
 subplot(2,2,4);
 imagesc(ssd2);
 colorbar;
-
-%profile viewer
+%%
+profile viewer

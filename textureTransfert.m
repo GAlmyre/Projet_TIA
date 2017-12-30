@@ -17,7 +17,7 @@ function result = textureTransfert(src, src_map, dst_map, PATCH_SIZE, alpha)
 
     mask = zeros(dst_size(1:2));
     
-    %padding
+    %padding correspondence maps
     dst_map = padarray(dst_map, [HALF_OVERLAP HALF_OVERLAP], 'symmetric', 'pre');
     dst_map = padarray(dst_map, nbb*PATCH_SIZE, 'symmetric', 'post');
     

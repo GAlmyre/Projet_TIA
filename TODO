@@ -1,5 +1,26 @@
-- image quilting random (selection de patchs aléatoires et quilting en calculant les min cut dans les deux directions)
-- image quilting pour la texture synthesis -> ajouter la contrainte de choix des patchs (erreur sur l'overlap)
-- implémenter les correspondance map 
-- image quilting texture transfer
 - implémentation itérative
+- faire un texture transfert plus propre par rapport à la gestion des tailles des images
+- uniformiser / mettre en commun les différents patchOverlap  overlap H et V utiliser la même implémentation que pour le diag ? (imfill depuis un seul pixel et filtrage pour moyenner la bordure)
+- fusionner les parties en commun entre synthèse et transfert
+- commenter le code
+- tester comportement variable globale display (si on oublie de la déclarer par exemple)
+
+
+pour le rapport :
+- expliquer comment on gère le quilting dans l'espace image (patch_size, overlap, padding de l'image et troncage à la fin pour enlever le padding
+- expliquer l'algo de quilting et le min cut
+- expliquer le texture synthesis : le choix du patch dans src dépend des patches voisins déjà présents (calcul de la ssd entre l'overlap et le patch)  + explication de l'utilité du masque
+- expliquer le texture transfert : ajout de correspondence maps qui permettent de définir nous même une contrainte supplémentaire sur le choix des patches
+			           le choix du patch se base donc sur la formule alpha * ssd(overlap, patch) + (1 - alpha) * ssd(overlap_map, patch_map)
+				   la première ssd se fait sur l'image en train d'être construite et l'image source (en utilisant le masque pour que la contrainte se fasse uniquement sur l'overlap)
+			           la deuxième ssd se fait sur les correspondance maps sans le masquage pour que l'erreur soit calculée pour tout le patch et non seulement l'overlap
+			           si implémentation itérative : diminuer la taille des patches et augmenter alpha -> premières passes pour approximer grossièrement puis affiner en améliorant la synthèse
+- expliquer l'amélioration du calcul des ssd en utilisant des filtres de convolution sum((p1 - p2)²) <=> sum(p1²) - sum(2*p1*p2) + sum(p2²)
+		sum(p1²) : conv(im1*im1, masque)
+		sum(2*p1*p2) : 2 * conv(im1, p2)
+		sum(p2²)     : 	sum(p2²)
+- améliorations / limites : 
+	- on a cherché à optimiser le calcul des ssd mais pas eu le temps de s'intéresser au min cut  on peut certainement améliorer cette partie du code en terme de rapidité
+	- amélioration des correspondance map ? pour l'instant on ne gère que des correspondance map qui encode une seule information par pixel, l'utilisateur doit construire lui même ses correspondance maps
+		- ajout du support des correspondances maps multiples permettant de donner plus de descripteurs à la fois
+	 

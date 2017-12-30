@@ -7,9 +7,10 @@ function result = textureTransfert(src, src_map, dst_map, nb_it, PATCH_SIZE)
     [src_h, src_w, src_c] = size(src);
     
     [dstm_h, dstm_w, dstm_c] = size(dst_map);
+    target_size = [dstm_h, dstm_w];
     
-    %nbb = ceil([dstm_h dstm_w]/PATCH_SIZE);
-    nbb = floor([dstm_h dstm_w]/PATCH_SIZE) - 1;
+    nbb = ceil([dstm_h dstm_w]/PATCH_SIZE);
+    %nbb = floor([dstm_h dstm_w]/PATCH_SIZE);
     
     dst_size = [nbb * PATCH_SIZE + OVERLAP, src_c];
     
@@ -18,11 +19,13 @@ function result = textureTransfert(src, src_map, dst_map, nb_it, PATCH_SIZE)
     mask = zeros(dst_size(1:2));
     
     %padding
-    
+    dst_map = padarray(dst_map, [HALF_OVERLAP HALF_OVERLAP], 'symmetric', 'pre');
+    dst_map = padarray(dst_map, nbb*PATCH_SIZE, 'symmetric', 'post');
     
 
     if DISPLAY == true
         plotResult(src, dst);
+        drawnow
     end
     for i=0:nbb(1)-1
         for j=0:nbb(2)-1
@@ -85,8 +88,8 @@ function result = textureTransfert(src, src_map, dst_map, nb_it, PATCH_SIZE)
                 drawnow
             end
     end
-    result = dst;%(HALF_OVERLAP:HALF_OVERLAP+target_size(1)-1, ...
-                 %HALF_OVERLAP:HALF_OVERLAP+target_size(2)-1, :);
+    result = dst(HALF_OVERLAP:HALF_OVERLAP+target_size(1)-1, ...
+                 HALF_OVERLAP:HALF_OVERLAP+target_size(2)-1, :);
     if DISPLAY == true
         plotResult(src, result);
     end

@@ -21,21 +21,45 @@ profile on
 global DISPLAY;
 DISPLAY = true;
 
-src = im2double(imread('./data/textures/mur1.jpg'));
+src = im2double(imread('./data/textures/rice.jpg'));
 [src_h src_w src_c] = size(src);
+src = imresize(src, 1, 'bilinear');
 
-dst = im2double(imread('./data/textures/antoijne1.png'));
-dst = imresize(dst, 5, 'bilinear');
+dst = im2double(imread('./data/textures/les3Sacs.jpg'));
+dst = imresize(dst, 0.5, 'bilinear');
 [dst_h dst_w dst_c] = size(dst);
 
 dst_map = rgb2gray(dst);
 src_map = histeq(rgb2gray(src), imhist(dst_map));
-%src_map = rgb2gray(src);
+src_map = rgb2gray(src);
+dst_map = histeq(rgb2gray(dst), imhist(src_map));
+
+%src_map = imgaussfilt(src_map, 10);
+dst_map = imgaussfilt(dst_map, 10);
+
+kernel = -1*ones(3);
+kernel(2,2) = 17;
+test = edge(dst_map, 'canny');
+
+test = imdilate(test, strel('diamond', 3));
+
+dst_map = 1.5*dst_map - test;
 
 
-patch_size = 50;
+%dst_map = imcomplement(dst_map);
+
+%test = edge(src_map, 'canny');
+%src_map = src_map + test;
+%imshow(dst_map)
+
+
+patch_size = 20;
+size(dst)
 
 dst = textureTransfert(src, src_map, dst_map, 1, patch_size);
+
+size(dst)
+
 
 %profile viewer
 %%

@@ -1,4 +1,4 @@
-function result = textureTransfert(src, src_map, dst_map, PATCH_SIZE)
+function result = textureTransfert(src, src_map, dst_map, PATCH_SIZE, alpha)
     global DISPLAY;
     
     HALF_OVERLAP = max(1,floor(PATCH_SIZE/6));
@@ -50,7 +50,7 @@ function result = textureTransfert(src, src_map, dst_map, PATCH_SIZE)
                 %rj = randi([1, src_w-(PATCH_SIZE+OVERLAP)+1]);
 
                 %patch = getImagePatch(src, [ri, rj], PATCH_SIZE+OVERLAP);
-                patch = getBestPatch2(src, overlap, src_map, overlap_map, 0.6, overlapMask, PATCH_SIZE+OVERLAP);
+                patch = getBestPatch2(src, overlap, src_map, overlap_map, alpha, overlapMask, PATCH_SIZE+OVERLAP);
             end
 
             overlap = dst(start_i:end_i, start_j:end_j,:);
